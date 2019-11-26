@@ -11,11 +11,20 @@ import androidx.paging.PagedList
 
 class OrdersVM : ViewModel() {
 
-    val data = LivePagedListBuilder(
-        OrdersDataSourceFactory(), PagedList.Config.Builder()
-            .setPageSize(20)
-            .setEnablePlaceholders(false)
-            .setInitialLoadSizeHint(20)
-            .build()
-    ).build()
+    private val dataSourceFactory = OrdersDataSourceFactory()
+    val loadStatus = dataSourceFactory.loadStatus
+
+    var data = LivePagedListBuilder(
+            dataSourceFactory,
+            PagedList.Config
+                .Builder()
+                .setPageSize(20)
+                .setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(20)
+                .build()
+        ).build()
+
+    fun refresh() {
+        dataSourceFactory.refresh()
+    }
 }

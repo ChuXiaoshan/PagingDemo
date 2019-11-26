@@ -1,5 +1,6 @@
 package com.cxsplay.pd.bskj
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.blankj.utilcode.util.LogUtils
 import com.cxsplay.pd.netk.RHelper
@@ -12,6 +13,8 @@ import io.reactivex.disposables.Disposable
  */
 
 class OrdersDataSource : PageKeyedDataSource<String, OrderBean>() {
+
+    val loadStatus = MutableLiveData<LoadStatus>()
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, OrderBean>) {
         LogUtils.d("---loadInitial--->${Thread.currentThread().name}")
@@ -29,15 +32,18 @@ class OrdersDataSource : PageKeyedDataSource<String, OrderBean>() {
 
                 override fun onSubscribe(d: Disposable) {
                     LogUtils.d("---onSubscribe---")
+                    loadStatus.postValue(LoadStatus.LOADING)
                 }
 
                 override fun onNext(t: DataResponse<BaseHeader<BasePage<OrderBean>>>) {
                     LogUtils.d("---any---$t")
                     callback.onResult(t.data?.list?.data!!, null, "2")
+                    loadStatus.postValue(LoadStatus.LOADED)
                 }
 
                 override fun onError(e: Throwable) {
                     LogUtils.d("---e${e.message}")
+                    loadStatus.postValue(LoadStatus.error(e.message))
                 }
             })
     }
@@ -58,15 +64,18 @@ class OrdersDataSource : PageKeyedDataSource<String, OrderBean>() {
 
                 override fun onSubscribe(d: Disposable) {
                     LogUtils.d("---onSubscribe---")
+//                    loadStatus.postValue(LoadStatus.LOADING)
                 }
 
                 override fun onNext(t: DataResponse<BaseHeader<BasePage<OrderBean>>>) {
                     LogUtils.d("---any---$t")
                     callback.onResult(t.data?.list?.data!!, "${params.key.toInt() + 1}")
+//                    loadStatus.postValue(LoadStatus.LOADED)
                 }
 
                 override fun onError(e: Throwable) {
                     LogUtils.d("---e${e.message}")
+//                    loadStatus.postValue(LoadStatus.error(e.message))
                 }
             })
     }
