@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = adapter
         model.data.observe(this, Observer { adapter.submitList(it) })
-        LogUtils.d("---loadStatus--->${model.loadStatus}")
+//        LogUtils.d("---loadStatus--->${model.loadStatus}")
         model.loadStatus.observe(this, Observer {
             srl.isRefreshing = it == LoadStatus.LOADING
             LogUtils.d("---model.loadStatus")

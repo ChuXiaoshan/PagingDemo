@@ -14,7 +14,8 @@ import io.reactivex.disposables.Disposable
 
 class OrdersDataSource : PageKeyedDataSource<String, OrderBean>() {
 
-    val loadStatus = MutableLiveData<LoadStatus>()
+    //    val networkStatus = MutableLiveData<LoadStatus>()
+    val initialLoad = MutableLiveData<LoadStatus>()
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, OrderBean>) {
         LogUtils.d("---loadInitial--->${Thread.currentThread().name}")
@@ -32,18 +33,21 @@ class OrdersDataSource : PageKeyedDataSource<String, OrderBean>() {
 
                 override fun onSubscribe(d: Disposable) {
                     LogUtils.d("---onSubscribe---")
-                    loadStatus.postValue(LoadStatus.LOADING)
+                    initialLoad.postValue(LoadStatus.LOADING)
+//                    networkStatus.postValue(LoadStatus.LOADING)
                 }
 
                 override fun onNext(t: DataResponse<BaseHeader<BasePage<OrderBean>>>) {
                     LogUtils.d("---any---$t")
                     callback.onResult(t.data?.list?.data!!, null, "2")
-                    loadStatus.postValue(LoadStatus.LOADED)
+                    initialLoad.postValue(LoadStatus.LOADED)
+//                    networkStatus.postValue(LoadStatus.LOADED)
                 }
 
                 override fun onError(e: Throwable) {
                     LogUtils.d("---e${e.message}")
-                    loadStatus.postValue(LoadStatus.error(e.message))
+                    initialLoad.postValue(LoadStatus.error(e.message))
+//                    networkStatus.postValue(LoadStatus.error(e.message))
                 }
             })
     }
@@ -64,49 +68,22 @@ class OrdersDataSource : PageKeyedDataSource<String, OrderBean>() {
 
                 override fun onSubscribe(d: Disposable) {
                     LogUtils.d("---onSubscribe---")
-//                    loadStatus.postValue(LoadStatus.LOADING)
+//                    networkStatus.postValue(LoadStatus.LOADING)
                 }
 
                 override fun onNext(t: DataResponse<BaseHeader<BasePage<OrderBean>>>) {
                     LogUtils.d("---any---$t")
                     callback.onResult(t.data?.list?.data!!, "${params.key.toInt() + 1}")
-//                    loadStatus.postValue(LoadStatus.LOADED)
+//                    networkStatus.postValue(LoadStatus.LOADED)
                 }
 
                 override fun onError(e: Throwable) {
                     LogUtils.d("---e${e.message}")
-//                    loadStatus.postValue(LoadStatus.error(e.message))
+//                    networkStatus.postValue(LoadStatus.error(e.message))
                 }
             })
     }
 
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<String, OrderBean>) {
-        LogUtils.d("---loadBefore--->${Thread.currentThread().name}")
-    }
-
-
-    fun getList() {
-        val params = mutableMapOf("pagesize" to "20", "page" to "1")
-        params["store_id"] = "42"
-        params["end_time"] = "2019-11-25 11:36:42"
-        params["end_time"] = "2019-10-25 11:36:42"
-
-        RHelper.apiService!!.orderListNew("", params)
-            .compose(RxSchedulers.io_main())
-            .subscribe(object : Observer<Any> {
-                override fun onComplete() {
-                }
-
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                override fun onNext(t: Any) {
-                    LogUtils.d("---any---$t")
-                }
-
-                override fun onError(e: Throwable) {
-                    LogUtils.d("---e${e.message}")
-                }
-            })
     }
 }
