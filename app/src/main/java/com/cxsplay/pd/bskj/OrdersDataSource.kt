@@ -14,7 +14,7 @@ import io.reactivex.disposables.Disposable
 
 class OrdersDataSource : PageKeyedDataSource<String, OrderBean>() {
 
-    //    val networkStatus = MutableLiveData<LoadStatus>()
+    val networkStatus = MutableLiveData<LoadStatus>()
     val initialLoad = MutableLiveData<LoadStatus>()
 
     override fun loadInitial(params: LoadInitialParams<String>, callback: LoadInitialCallback<String, OrderBean>) {

@@ -9,7 +9,7 @@ import androidx.paging.PagedList
  */
 data class Listing<T>(
     val pagedList: LiveData<PagedList<T>>,
-//    val networkState: LiveData<LoadStatus>,
+    val networkState: LiveData<LoadStatus>,
     val refreshState: LiveData<LoadStatus>,
     val refresh: () -> Unit
 )

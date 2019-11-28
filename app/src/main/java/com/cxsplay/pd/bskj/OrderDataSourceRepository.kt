@@ -15,7 +15,7 @@ class OrderDataSourceRepository {
         val livePageList = sourceFactory.toLiveData(pageSize = 20)
         return Listing(
             pagedList = livePageList,
-//            networkState = Transformations.switchMap(sourceFactory.sourceLiveData) { it.networkStatus },
+            networkState = Transformations.switchMap(sourceFactory.sourceLiveData) { it.networkStatus },
             refreshState = Transformations.switchMap(sourceFactory.sourceLiveData) { it.initialLoad },
             refresh = { sourceFactory.sourceLiveData.value?.invalidate() })
     }
